@@ -42,6 +42,72 @@ for i in range(numFeature):
 
 print('Distinct Feature List: ',distinct_feature_list)    # returns unique features values for each feature
 
+class_count = []
+
+for son in distinct_class_list:
+    count = 0
+    for i in dataset:
+        if son == i[len(i)-1]:
+            count += 1
+    class_count.append(count)
+
+print(class_count)
+
+prior_probability = [ float(x/datasetLen) for x in class_count ]
+print(prior_probability)
+
+feature_likelihood = []
+
+
+for son in distinct_class_list:
+    each_son = []
+    index = 0
+    for features in distinct_feature_list:
+        likelihood = []
+        for feature_value in features:
+            sum = 0
+            for i in dataset:
+                if i[index]==feature_value and i[len(i)-1]==son:
+                    sum += 1
+            sum = float(sum/datasetLen)
+            p_x_wi = sum/prior_probability[son]
+            likelihood.append(p_x_wi)
+        each_son.append(likelihood)
+        index += 1
+    feature_likelihood.append(each_son)
+
+
+print(feature_likelihood)
+
+# Test Section
+# feature value for feature 1 = 10 , feature value for feature 1 = 18
+# task is to find the highest p(wi|x)
+
+feature_value = [10,18]
+
+indexes = []
+
+index = 0
+for features in distinct_feature_list:
+    features = list(features)
+    indexes.append(features.index(feature_value[index]))
+    index += 1
+
+posterior = []
+
+for features in feature_likelihood:
+    index = 0
+    mul = 1
+    for feature in features:
+        mul *= (feature[indexes[index]])
+        index += 1
+    posterior.append(mul)
+
+
+print()
+print('Output Class: ')
+print(posterior.index(max(posterior)))
+        
 
 
 
